@@ -22,8 +22,8 @@ var cheerio = require('cheerio');
 mongoose.Promise = Promise;
 
 // Require Models
-var Story = require('.models/Story.js');
-var Message = require('.models/Message.js');
+var Story = require('./models/Story.js');
+var Message = require('./models/Note.js');
 
 // Initialize Express
 var app = express();
@@ -47,7 +47,7 @@ app.set('view engine', 'handlebars');
 //================================================
 // Database configuration with mongoose
 //================================================
-mongoose.connect("mongodb://localhost/mongoosearticles");
+mongoose.connect("mongodb://localhost/nytPotteryStories");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -80,42 +80,55 @@ app.get('/', function(req, res) {
      $('div.story-body').each(function(i, element) {
 
        // Store the scraped data in an empty object
-       var result = {};
+       //var result = {};
+       var result = [];
 
-      //  var link = $(element).children('a').attr('href');
-      //  var title = $(element).find('a').find('.story-meta').find('h2').text();
-      //  var summary = $(element).find('a').find('.story-meta').find('p').text();
-      //  var image = $(element).find('a').find('.wide-thumb').find('img').attr('src');
+       var link = $(element).children('a').attr('href');
+       var title = $(element).find('a').find('.story-meta').find('h2').text();
+       var summary = $(element).find('a').find('.story-meta').find('p').text();
+       var image = $(element).find('a').find('.wide-thumb').find('img').attr('src');
 
-      result.link = $(element).children('a').attr('href');
-      result.title = $(element).find('a').find('.story-meta').find('h2').text();
-      result.summary = $(element).find('a').find('.story-meta').find('p').text();
-      result.image = $(element).find('a').find('.wide-thumb').find('img').attr('src');
+      //result.link = $(element).children('a').attr('href');
+      //result.title = $(element).find('a').find('.story-meta').find('h2').text();
+      //result.summary = $(element).find('a').find('.story-meta').find('p').text();
+      //result.image = $(element).find('a').find('.wide-thumb').find('img').attr('src');
 
+/*
        // Save these results in an object that we'll store in a database.
        // Using our Story model, create a new entry
        // This effectively passes the result object to the entry
-       var news = new Story(docS);
+       var news = new Story(result);
 
        // Save that news to the database.
        news.save(function(err, doc) {
+         // Log any errors
          if err {
            console.log(err);
          } else {
+           // Or log the doc
            console.log(doc);
          }
        });
+*/
 
-        // Tell the browser that we finished scraping the text
+// Save these results in an object that we'll push into the result array we defined earlier
+result.push({
+  link: link,
+  title: title,
+  summary: summary,
+  image: image
+  });
+
         });
-      res.send('Scrape Complete');
+        // Tell the browser that we finished scraping the text
+        res.send('Scrape Complete');
     });
 
  });
 
 
 // A GET request to scrape the NY Times Ceramics and Pottery News website
- app.get('/all', function(req, res) {
+ app.get('/stories', function(req, res) {
   // Get the HTML body with request
   request('https://www.nytimes.com/topic/subject/ceramics-and-pottery', function(error, response, html) {
     // Load the HTML into cheerio and save it to variable
