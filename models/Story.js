@@ -16,10 +16,20 @@ var StorySchema = new Schema({
     type: String,
     required: true
   },
+  // summary is a required string
+  summary: {
+    type: String,
+    required: true
+  },
+  // image is a required string
+  image: {
+    type: String,
+    required: true
+  },
   // This only saves one note's ObjectId, ref refers to the Note model
   note: {
     type: Schema.Types.ObjectId,
-    ref: "Comment"
+    ref: "Note"
   }
 });
 
