@@ -50,7 +50,12 @@ app.set('view engine', 'handlebars');
 //================================================
 // Database configuration with mongoose
 //================================================
-mongoose.connect("mongodb://localhost/nytPotteryStories");
+var PORT = 3000;
+
+
+//mongoose.connect("mongodb://localhost/nytPotteryStories");
+mongoose.connect('mongodb://heroku_6lbsjc7p:c8aq8q7ft3ruftpka8qgsjkams@ds139801.mlab.com:39801/heroku_6lbsjc7p');
+
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -134,6 +139,6 @@ app.get('/stories', function(req, res) {
 
 
  // Listen on PORT 3000
-app.listen(3000, function() {
+app.listen(PORT, function() {
   console.log('App running on port 3000!');
 });
